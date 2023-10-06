@@ -48,6 +48,17 @@ const updateFile = async (id, data) => {
   }
 };
 
+const deleteFile = async (id) => {
+  try {
+    const data = await readFile();
+    const filtered = data.map((talker) => talker.id !== id);
+
+    await fs.writeFile(path.resolve(__dirname, talkerJson), JSON.stringify(filtered));
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+
 router.get('/talker', async (_req, res) => {
   const talkers = await readFile();
   if (talkers.length === 0) return res.status(200).json([]);
@@ -83,6 +94,16 @@ router.put('/talker/:id', TokenValidation, TalkerValidation, async (req, res) =>
     const data = await readFile();
     const listed = data.find((t) => t.id === Number(id));
     return res.status(200).json(listed);
+  } catch (error) {
+    return res.status(404).json({ message: 'Pessoa palestrante não encontrada' });
+  }
+});
+
+router.delete('/talker/:id', TokenValidation, async (req, res) => {
+  try {
+    const { id } = req.params;
+    await deleteFile(Number(id));
+    return res.status(204).json({ message: 'Pessoa palestrante deletada com sucesso' });
   } catch (error) {
     return res.status(404).json({ message: 'Pessoa palestrante não encontrada' });
   }
