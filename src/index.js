@@ -1,6 +1,9 @@
 const express = require('express');
+
 const talker = require('./routes/talker');
+
 const loginData = require('./middlewares/loginData');
+
 const app = express();
 app.use(express.json());
 
@@ -11,8 +14,8 @@ const createToken = () => {
   const token1 = Math.random().toString(16).substr(2);
   const token2 = Math.random().toString(16).substr(2);
   const token3 = `${token1}${token2}.slice(0, 16)`;
-  return token;
-}
+  return token3;
+};
 
 app.post('/login', loginData, async (req, res) => {
   const token = createToken();
